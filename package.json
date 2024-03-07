@@ -12,5 +12,8 @@
   "license": "ISC",
   "devDependencies": {
     "eslint": "^8.57.0"
+  },
+  "dependencies": {
+    "chokidar": "^3.6.0"
   }
 }
