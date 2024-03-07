@@ -1,6 +1,7 @@
 {
   "name": "brage",
   "version": "0.0.0",
+  "type": "module",
   "description": "Backend Revolutionary Architecture Generation Engine",
   "main": "index.js",
   "scripts": {
