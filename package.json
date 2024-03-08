@@ -13,6 +13,7 @@
   "author": "Austin Brage",
   "license": "ISC",
   "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
     "@types/node": "^20.11.25",
     "eslint": "^8.57.0"
   },
