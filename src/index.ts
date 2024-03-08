@@ -2,8 +2,8 @@
 
 import chokidar from 'chokidar'
 import { resolve } from 'path'
-import { FolderOperations } from './utils/fileOperations.js'
-import { routeFolder, serverFolder } from './utils/config.js'
+import { FolderOperations } from './utils/fileOperations'
+import { routeFolder, serverFolder } from './config/consts'
 
 const folderOperations = new FolderOperations({ routeFolder, serverFolder })
 
