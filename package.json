@@ -4,6 +4,9 @@
   "type": "module",
   "description": "Backend Revolutionary Architecture Generation Engine",
   "main": "index.js",
+  "bin": {
+    "brage": "./src/index.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
