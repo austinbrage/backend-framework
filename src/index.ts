@@ -1,14 +1,30 @@
 #!/usr/bin/env node
 
 import chokidar from 'chokidar'
-import { join } from 'path'
+import { resolve } from 'path'
+import { FolderOperations } from './utils/fileOperations.js'
+import { routeFolder, serverFolder } from './utils/config.js'
 
-const routeFolder = join(process.cwd(), 'app', 'routes')
+const folderOperations = new FolderOperations({ routeFolder, serverFolder })
 
 const watcher = chokidar.watch(routeFolder, {
     ignored: /(^|[\/\\])\../, 
     persistent: true
 })
 
-watcher
-    .on('all', (event, path) => { console.log(event, path); })
+watcher.on('all', async (event, path) => { 
+    console.log(event, path)
+
+    const absolutePath = resolve(path)
+    
+    await folderOperations.createServerFolder()
+    const routeName = folderOperations.getRouteName(absolutePath)
+
+    if(!routeName) return
+
+    if(event === 'addDir') {
+        await folderOperations.createRouteFolder(routeName)
+    } else if(event === 'unlinkDir') {
+        await folderOperations.deleteRouteFolder(routeName)    
+    }
+})
