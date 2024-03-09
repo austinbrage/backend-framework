@@ -1,5 +1,5 @@
 import { sep, join, resolve, relative } from 'path'
-import { ensureDir, pathExists, remove, writeFile } from 'fs-extra'
+import { ensureDir, pathExists, remove } from 'fs-extra'
 import { TypesOperations } from './typesGenerator'
 
 type Constructor = { 

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import chokidar from 'chokidar'
-import { FolderOperations } from './utils/fileOperations'
+import { FolderOperations } from './classes/fileOperations'
 import { routeFolder, serverFolder } from './config/consts'
 
 const folderOperations = new FolderOperations({ routeFolder, serverFolder })
