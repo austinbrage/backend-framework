@@ -11,6 +11,7 @@ export class QueriesOperations {
     }
 
     private async processSQL(fileText: string) {
+        const newData: Record<string, string> = {}
         const lines = fileText.split('\n')
 
         let currentQuery = ''
@@ -24,15 +25,17 @@ export class QueriesOperations {
             } else if (cleanLine !== '') {
                 if (currentComment !== '') currentQuery += cleanLine + ' '
             } else if (currentComment !== '' && currentQuery.trim() !== '') {
-                this.data[currentComment] = currentQuery
+                newData[currentComment] = currentQuery
                 currentComment = ''
                 currentQuery = ''
             }
         }
+
+        this.data = newData
     }
 
     private generateContent(tableName: string) {
-        const typeInterface = `export interface ${tableName}Interface {\n${Object.keys(this.data).map(queryName => `   ${queryName}: string;`).join('\n')}\n}\n\n`
+        const typeInterface = `export interface ${tableName}Interface {\n${Object.keys(this.data).map(queryName => `  ${queryName}: string;`).join('\n')}\n}\n\n`
         const queryObject = `const ${tableName}Queries: ${tableName}Interface = ${JSON.stringify(this.data, null, 2)};\n\nexport default ${tableName}Queries;`
 
         this.content = typeInterface + queryObject
