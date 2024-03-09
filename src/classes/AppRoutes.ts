@@ -49,6 +49,19 @@ export class FolderOperations extends TypesOperations {
         )
     }
 
+    private isQueriesFolder() {
+        const relativePath = relative(this.routeFolder, this.filePath)
+        const normalizedPath = relativePath.replace(/[\/\\]/g, sep)
+        const pathSegments = normalizedPath.split(sep)
+
+        return (
+            pathSegments.length === 3 
+            && pathSegments[0] === this.routeName 
+            && pathSegments[1] === 'queries'
+            && pathSegments[2]?.endsWith('.sql')
+        )
+    }
+
     async createServerFolder() { 
         await ensureDir(this.serverFolder)
             .catch(this.handleError) 
@@ -94,6 +107,19 @@ export class FolderOperations extends TypesOperations {
             .catch(this.handleError)
 
         await this.writeTablesFile(this.filePath, tablesFilePath)
+            .catch(this.handleError)
+    }
+
+    async createQueriesFile() {
+        if(!this.routeName || !this.isQueriesFolder()) return
+
+        const queriesFolderPath = join(this.serverFolder, this.routeName, 'queries')
+        const queriesFilePath = join(queriesFolderPath, 'queries.ts')
+        
+        await ensureDir(queriesFolderPath)
+            .catch(this.handleError)        
+        
+        await this.writeQueryFile(this.filePath, queriesFilePath)
             .catch(this.handleError)
     }
 }

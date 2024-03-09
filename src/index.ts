@@ -23,6 +23,7 @@ watcher.on('all', async (event, path) => {
         await folderOperations.createRouteFolder()
     } else if(event === 'add' || event === 'change') {
         await folderOperations.createTypesFile()
+        await folderOperations.createQueriesFile()
     } else if(event === 'unlinkDir') {
         await folderOperations.deleteRouteFolder()    
     }

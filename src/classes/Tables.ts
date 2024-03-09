@@ -1,5 +1,6 @@
 import { readFile, writeFile } from 'fs-extra'
 import { TYPES_MAP, isValidType } from '../config/typesMap'
+import { QueriesOperations } from './Queries'
 
 interface ColumnInfo {
     name: string
@@ -7,9 +8,11 @@ interface ColumnInfo {
     constraint?: string
 }
 
-export class TypesOperations {
+export class TypesOperations extends QueriesOperations {
 
-    constructor() {}    
+    constructor() {
+        super()
+    }    
 
     private camelCase(str: string) {
         return str.replace(/_([a-z])/g, (_, letter) => letter.toUpperCase())
@@ -76,7 +79,7 @@ export class TypesOperations {
             if (columns.length === 0) return
 
             const content = this.getTypeScriptContent(tableName, columns)
-            
+
             await writeFile(writePath, content, 'utf-8')
                 .catch(err => { throw new Error(err) })
         }
