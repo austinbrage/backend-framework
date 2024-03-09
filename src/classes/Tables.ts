@@ -49,7 +49,7 @@ export class TypesOperations {
         })
     }
 
-    private getTypeScriptFile(tableName: string, columns: ColumnInfo[]) {
+    private getTypeScriptContent(tableName: string, columns: ColumnInfo[]) {
 
         return `type ${this.camelCase(tableName)} = {\n${columns.map(column => {
             if(!column.type || !column.constraint) return
@@ -60,7 +60,7 @@ export class TypesOperations {
         }).join('\n')}\n};\n\nexport default ${this.camelCase(tableName)};`
     }
 
-    async writeTypeScriptFile(readPath: string, writePath: string) {
+    async writeTablesFile(readPath: string, writePath: string) {
         const sqlContent = await readFile(readPath, 'utf-8')
             .catch(err => { throw new Error(err) })
 
@@ -75,8 +75,10 @@ export class TypesOperations {
 
             if (columns.length === 0) return
 
-            const content = this.getTypeScriptFile(tableName, columns)
-            await writeFile(writePath, content, 'utf-8').catch(err => { throw new Error(err) })
+            const content = this.getTypeScriptContent(tableName, columns)
+            
+            await writeFile(writePath, content, 'utf-8')
+                .catch(err => { throw new Error(err) })
         }
     }    
 }

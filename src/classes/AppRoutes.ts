@@ -93,8 +93,7 @@ export class FolderOperations extends TypesOperations {
         await ensureDir(typesFolderPath)
             .catch(this.handleError)
 
-        await this.writeTypeScriptFile(this.filePath, tablesFilePath)
+        await this.writeTablesFile(this.filePath, tablesFilePath)
             .catch(this.handleError)
-
     }
 }
