@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 import chokidar from 'chokidar'
-import { resolve } from 'path'
 import { FolderOperations } from './utils/fileOperations'
 import { routeFolder, serverFolder } from './config/consts'
 
@@ -14,19 +13,17 @@ const watcher = chokidar.watch(routeFolder, {
 
 watcher.on('all', async (event, path) => { 
     console.log(event, path)
-
-    const absolutePath = resolve(path)
     
     await folderOperations.createServerFolder()
-    const routeName = folderOperations.getRouteName(absolutePath)
 
-    if(!routeName) return
+    folderOperations.getRouteName()
+    folderOperations.getFilePath(path)
 
     if(event === 'addDir') {
-        await folderOperations.createRouteFolder(absolutePath, routeName)
+        await folderOperations.createRouteFolder()
     } else if(event === 'add' || event === 'change') {
-        await folderOperations.createTypesFile(absolutePath, routeName)
+        await folderOperations.createTypesFile()
     } else if(event === 'unlinkDir') {
-        await folderOperations.deleteRouteFolder(absolutePath, routeName)    
+        await folderOperations.deleteRouteFolder()    
     }
 })

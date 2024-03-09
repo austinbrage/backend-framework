@@ -8,11 +8,15 @@ type Constructor = {
 }
 
 export class FolderOperations extends TypesOperations {
+    private filePath: string
+    private routeName: string
     private routeFolder: string
     private serverFolder: string
 
     constructor({ routeFolder, serverFolder }: Constructor) {
         super()
+        this.filePath = ''
+        this.routeName = ''
         this.routeFolder = resolve(routeFolder)
         this.serverFolder = resolve(serverFolder)
     }
@@ -21,25 +25,25 @@ export class FolderOperations extends TypesOperations {
         console.error(err.message)
     }
 
-    private isRouteFolder(filePath: string, routeName: string) {
-        const relativePath = relative(this.routeFolder, filePath)
+    private isRouteFolder() {
+        const relativePath = relative(this.routeFolder, this.filePath)
         const normalizedPath = relativePath.replace(/[\/\\]/g, sep)
         const pathSegments = normalizedPath.split(sep)
         
         return (
             pathSegments.length === 1 
-            && pathSegments[0] === routeName
+            && pathSegments[0] === this.routeName
         )
     }
 
-    private isTablesFolder(filePath: string, routeName: string) {
-        const relativePath = relative(this.routeFolder, filePath)
+    private isTablesFolder() {
+        const relativePath = relative(this.routeFolder, this.filePath)
         const normalizedPath = relativePath.replace(/[\/\\]/g, sep)
         const pathSegments = normalizedPath.split(sep)
 
         return (
             pathSegments.length === 3 
-            && pathSegments[0] === routeName 
+            && pathSegments[0] === this.routeName 
             && pathSegments[1] === 'tables'
             && pathSegments[2]?.endsWith('.sql')
         )
@@ -50,25 +54,29 @@ export class FolderOperations extends TypesOperations {
             .catch(this.handleError) 
     }
 
-    getRouteName(filePath: string) {
-        const relativePath = relative(this.routeFolder, filePath)
-        const normalizedPath = relativePath.replace(/[\/\\]/g, sep)
-        const pathSegments = normalizedPath.split(sep)
-        return pathSegments[0]
+    getFilePath(filePath: string) {
+        this.filePath = resolve(filePath) 
     }
 
-    async createRouteFolder(filePath: string, routeName: string) {
-        if(!this.isRouteFolder(filePath, routeName)) return
+    getRouteName() {
+        const relativePath = relative(this.routeFolder, this.filePath)
+        const normalizedPath = relativePath.replace(/[\/\\]/g, sep)
+        const pathSegments = normalizedPath.split(sep)
+        this.routeName = pathSegments[0] 
+    }
 
-        const serverFolderPath = join(this.serverFolder, routeName)
+    async createRouteFolder() {
+        if(!this.routeName || !this.isRouteFolder()) return
+
+        const serverFolderPath = join(this.serverFolder, this.routeName)
         await ensureDir(serverFolderPath)
             .catch(this.handleError)
     }
 
-    async deleteRouteFolder(filePath: string, routeName: string) {
-        if(!this.isRouteFolder(filePath, routeName)) return
+    async deleteRouteFolder() {
+        if(!this.routeName || !this.isRouteFolder()) return
 
-        const serverFolderPath = join(this.serverFolder, routeName)
+        const serverFolderPath = join(this.serverFolder, this.routeName)
         const exists = await pathExists(serverFolderPath)
             .catch(this.handleError)
             
@@ -76,16 +84,16 @@ export class FolderOperations extends TypesOperations {
             .catch(this.handleError)
     }
 
-    async createTypesFile(filePath: string, routeName: string) {
-        if(!this.isTablesFolder(filePath, routeName)) return
+    async createTypesFile() {
+        if(!this.routeName || !this.isTablesFolder()) return
 
-        const typesFolderPath = join(this.serverFolder, routeName, 'types')
+        const typesFolderPath = join(this.serverFolder, this.routeName, 'types')
         const tablesFilePath = join(typesFolderPath, 'tables.ts')
 
         await ensureDir(typesFolderPath)
             .catch(this.handleError)
 
-        await this.writeTypeScriptFile(filePath, tablesFilePath)
+        await this.writeTypeScriptFile(this.filePath, tablesFilePath)
             .catch(this.handleError)
 
     }
