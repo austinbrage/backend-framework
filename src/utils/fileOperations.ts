@@ -1,16 +1,18 @@
 import { sep, join, resolve, relative } from 'path'
 import { ensureDir, pathExists, remove, writeFile } from 'fs-extra'
+import { TypesOperations } from './typesGenerator'
 
 type Constructor = { 
     routeFolder: string, 
     serverFolder: string 
 }
 
-export class FolderOperations {
+export class FolderOperations extends TypesOperations {
     private routeFolder: string
     private serverFolder: string
 
     constructor({ routeFolder, serverFolder }: Constructor) {
+        super()
         this.routeFolder = resolve(routeFolder)
         this.serverFolder = resolve(serverFolder)
     }
@@ -75,8 +77,6 @@ export class FolderOperations {
     }
 
     async createTypesFile(filePath: string, routeName: string) {
-        console.log('isTablesFolder', this.isTablesFolder(filePath, routeName))
-
         if(!this.isTablesFolder(filePath, routeName)) return
 
         const typesFolderPath = join(this.serverFolder, routeName, 'types')
@@ -85,7 +85,8 @@ export class FolderOperations {
         await ensureDir(typesFolderPath)
             .catch(this.handleError)
 
-        await writeFile(tablesFilePath, '/* Contenido de tables.ts */')
+        await this.writeTypeScriptFile(filePath, tablesFilePath)
             .catch(this.handleError)
+
     }
 }
