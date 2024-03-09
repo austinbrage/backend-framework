@@ -1,6 +1,6 @@
 import { sep, join, resolve, relative } from 'path'
 import { ensureDir, pathExists, remove } from 'fs-extra'
-import { TypesOperations } from './typesGenerator'
+import { TypesOperations } from './Tables'
 
 type Constructor = { 
     routeFolder: string, 
