@@ -7,15 +7,21 @@ type Constructor = {
     serverFolder: string 
 }
 
+type FilePaths = {
+    current: string
+    queries: string
+    types: string
+}
+
 export class FolderOperations extends TypesOperations {
-    private filePath: string
+    private filePath: FilePaths
     private routeName: string
     private routeFolder: string
     private serverFolder: string
 
     constructor({ routeFolder, serverFolder }: Constructor) {
         super()
-        this.filePath = ''
+        this.filePath = { current: '', queries: '', types: '' }
         this.routeName = ''
         this.routeFolder = resolve(routeFolder)
         this.serverFolder = resolve(serverFolder)
@@ -26,7 +32,7 @@ export class FolderOperations extends TypesOperations {
     }
 
     private isRouteFolder() {
-        const relativePath = relative(this.routeFolder, this.filePath)
+        const relativePath = relative(this.routeFolder, this.filePath.current)
         const normalizedPath = relativePath.replace(/[\/\\]/g, sep)
         const pathSegments = normalizedPath.split(sep)
         
@@ -37,29 +43,39 @@ export class FolderOperations extends TypesOperations {
     }
 
     private isTablesFolder() {
-        const relativePath = relative(this.routeFolder, this.filePath)
+        const relativePath = relative(this.routeFolder, this.filePath.current)
         const normalizedPath = relativePath.replace(/[\/\\]/g, sep)
         const pathSegments = normalizedPath.split(sep)
 
-        return (
+        if(
             pathSegments.length === 3 
             && pathSegments[0] === this.routeName 
             && pathSegments[1] === 'tables'
             && pathSegments[2]?.endsWith('.sql')
-        )
+        ) {
+            this.filePath.types = this.filePath.current
+            return true
+        }
+
+        return false
     }
 
     private isQueriesFolder() {
-        const relativePath = relative(this.routeFolder, this.filePath)
+        const relativePath = relative(this.routeFolder, this.filePath.current)
         const normalizedPath = relativePath.replace(/[\/\\]/g, sep)
         const pathSegments = normalizedPath.split(sep)
 
-        return (
+        if(
             pathSegments.length === 3 
             && pathSegments[0] === this.routeName 
             && pathSegments[1] === 'queries'
             && pathSegments[2]?.endsWith('.sql')
-        )
+        ) {
+            this.filePath.queries = this.filePath.current
+            return true
+        }
+
+        return false
     }
 
     async createServerFolder() { 
@@ -68,11 +84,11 @@ export class FolderOperations extends TypesOperations {
     }
 
     getFilePath(filePath: string) {
-        this.filePath = resolve(filePath) 
+        this.filePath.current = resolve(filePath) 
     }
 
     getRouteName() {
-        const relativePath = relative(this.routeFolder, this.filePath)
+        const relativePath = relative(this.routeFolder, this.filePath.current)
         const normalizedPath = relativePath.replace(/[\/\\]/g, sep)
         const pathSegments = normalizedPath.split(sep)
         this.routeName = pathSegments[0] 
@@ -106,7 +122,7 @@ export class FolderOperations extends TypesOperations {
         await ensureDir(typesFolderPath)
             .catch(this.handleError)
 
-        await this.writeTablesFile(this.filePath, tablesFilePath)
+        await this.writeTablesFile(this.filePath.types, tablesFilePath)
             .catch(this.handleError)
     }
 
@@ -119,7 +135,7 @@ export class FolderOperations extends TypesOperations {
         await ensureDir(queriesFolderPath)
             .catch(this.handleError)        
         
-        await this.writeQueryFile(this.filePath, queriesFilePath)
+        await this.writeQueryFile(this.filePath.queries, queriesFilePath)
             .catch(this.handleError)
     }
 }
