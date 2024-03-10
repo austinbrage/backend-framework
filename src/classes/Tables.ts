@@ -1,6 +1,6 @@
 import { readFile, writeFile } from 'fs-extra'
 import { TYPES_MAP, isValidType } from '../config/typesMap'
-import { QueriesOperations } from './Queries'
+import { ArgumentOperations } from './Arguments'
 
 interface ColumnInfo {
     name: string
@@ -8,7 +8,7 @@ interface ColumnInfo {
     constraint?: string
 }
 
-export class TypesOperations extends QueriesOperations {
+export class TypesOperations extends ArgumentOperations {
 
     constructor() {
         super()

@@ -131,11 +131,15 @@ export class FolderOperations extends TypesOperations {
 
         const queriesFolderPath = join(this.serverFolder, this.routeName, 'queries')
         const queriesFilePath = join(queriesFolderPath, 'queries.ts')
+        const fieldsFilePath = join(queriesFolderPath, 'fields.ts')
         
         await ensureDir(queriesFolderPath)
             .catch(this.handleError)        
         
         await this.writeQueryFile(this.filePath.queries, queriesFilePath)
+            .catch(this.handleError)
+        
+        await this.writeArgumentFile(fieldsFilePath)
             .catch(this.handleError)
     }
 }

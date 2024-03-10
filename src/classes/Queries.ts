@@ -2,12 +2,14 @@ import { readFile, writeFile } from 'fs-extra'
 import { basename, extname } from 'path'
 
 export class QueriesOperations {
-    private data: Record<string, string>
+    data: Record<string, string>
+    tableName: string
     private content: string
 
     constructor() {
         this.data = {}
         this.content = ''
+        this.tableName = ''
     }
 
     private async processSQL(fileText: string) {
@@ -46,9 +48,10 @@ export class QueriesOperations {
             .catch(err => { throw new Error(err) })
 
         this.processSQL(sqlContent)
-            
+
         const tableName = basename(readPath, extname(readPath))
-        
+
+        this.tableName = tableName
         this.generateContent(tableName)
 
         await writeFile(writePath, this.content, 'utf-8')
