@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "ES2021",
+    "skipLibCheck": true,
+
+    "module": "commonjs",
+    "rootDir": "./server",
+    "outDir": "./dist",                                
+    "noEmitOnError": true,
+    "typeRoots": ["./node_modules/@types"],
+
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true
+  },
+  "include": ["server/**/*.ts"],
+  "exclude": ["node_modules"]
+}
