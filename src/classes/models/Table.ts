@@ -37,7 +37,7 @@ export class TableFile {
     }
 
     private parseTableContent(tableContent: string): ColumnInfo[] {
-        const columnRegex = /`(\w+)`\s+(\w+(?:\(\d+\))?)\s+(NOT NULL|AUTO_INCREMENT|DEFAULT \S+)?/;
+        const columnRegex = /`(\w+)`\s+(\w+(?:\(\d+\))?)\s+(NOT NULL|AUTO_INCREMENT|DEFAULT|UNIQUE \S+)?/;
         const columnsMatch = tableContent.match(new RegExp(columnRegex, 'g'))
     
         if (!columnsMatch) return []
