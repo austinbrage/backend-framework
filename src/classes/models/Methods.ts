@@ -90,22 +90,6 @@ export class MethodsFile {
 
         const content = this.asignCorrectType({ fieldsObject, tableTypes }) ?? ''
 
-        // const lines = fieldsObject?.split('\n')  ?? null
-        
-        // if(lines === null) return
-
-        // lines.forEach((line, index) => {
-        //     const propMatch = line.match(/(\w+): any/)
-    
-        //     if (propMatch && tableTypes[propMatch[1]]) {
-        //         const propertyName = propMatch[1]
-        //         const propertyType = tableTypes[propertyName]
-        //         lines[index] = line.replace(/any/g, propertyType)
-        //     }
-        // })
-
-        // const content = lines.join('\n')
-
         await writeFile(writePath, content, 'utf-8')
             .catch(err => { throw new Error(err) })
     }
