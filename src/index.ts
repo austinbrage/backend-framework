@@ -28,12 +28,14 @@ watcher.on('unlinkDir', async (path) => {
 watcher.on('add', async (path) => {
     const appModel = new AppModel(init)
     await appModel.createTableFile(path)
+    await appModel.createMethodsFile(path)
     await appModel.createQueryFieldFiles(path)
 })
 
 watcher.on('change', async (path) => {
     const appModel = new AppModel(init)
     await appModel.createTableFile(path)
+    await appModel.createMethodsFile(path)
     await appModel.createQueryFieldFiles(path)
 })
 

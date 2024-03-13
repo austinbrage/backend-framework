@@ -1,8 +1,9 @@
 import { join, relative, resolve, sep } from "path"
 import { ensureDir } from "fs-extra"
+import { TableFile } from "./Table"
 import { FieldsFile } from "./Fields"
 import { QueriesFile } from "./Queries"
-import { TableFile } from "./Table"
+import { MethodsFile } from "./Methods"
 
 type Constructor = { 
     appFolder: string, 
@@ -10,9 +11,10 @@ type Constructor = {
 }
 
 export class AppModel {
+    private tableFile
     private fieldsFile
     private queriesFile
-    private tableFile
+    private methodsFile
     private routeName: string
     private appFolder: string
     private serverFolder: string
@@ -21,9 +23,10 @@ export class AppModel {
         this.routeName = ''
         this.appFolder = resolve(appFolder)
         this.serverFolder = resolve(serverFolder)
+        this.tableFile = new TableFile()
         this.fieldsFile = new FieldsFile()
         this.queriesFile = new QueriesFile()
-        this.tableFile = new TableFile()
+        this.methodsFile = new MethodsFile()
     }
 
     private handleError(err: Error) {
@@ -91,6 +94,24 @@ export class AppModel {
             writePath: fieldFilePath,
             tableName: this.routeName,
             queries 
+        })
+            .catch(this.handleError)
+    }
+    
+    async createMethodsFile(filePath: string) {
+        if(!this.isTableFile(filePath) && !this.isQueriesFile(filePath)) return
+
+        const typesFolderPath = join(this.serverFolder, this.routeName, 'types')
+        const methodsFilePath = join(typesFolderPath, 'methods.ts')   
+        const tableFilePath = join(typesFolderPath, 'table.ts')
+
+        const helpersFolderPath = join(this.serverFolder, this.routeName, 'helpers')
+        const fieldFilePath = join(helpersFolderPath, 'fields.ts')
+
+        await this.methodsFile.writeMethodsFile({ 
+            fieldsPath: fieldFilePath,
+            tablePath: tableFilePath,
+            writePath: methodsFilePath
         })
             .catch(this.handleError)
     }
