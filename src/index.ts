@@ -27,16 +27,12 @@ watcher.on('unlinkDir', async (path) => {
 // Create Server Routes Model
 watcher.on('add', async (path) => {
     const appModel = new AppModel(init)
-    await appModel.createTableFile(path)
-    await appModel.createMethodsFile(path)
-    await appModel.createQueryFieldFiles(path)
+    await appModel.createModel(path)
 })
 
 watcher.on('change', async (path) => {
     const appModel = new AppModel(init)
-    await appModel.createTableFile(path)
-    await appModel.createMethodsFile(path)
-    await appModel.createQueryFieldFiles(path)
+    await appModel.createModel(path)
 })
 
 watcher.on('all', async (event, path) => { 

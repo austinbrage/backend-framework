@@ -10,6 +10,8 @@ type Constructor = {
     serverFolder: string 
 }
 
+type MethodArgs = { tableContent?: string, fieldsContent?: string }
+
 export class AppModel {
     private tableFile
     private fieldsFile
@@ -66,14 +68,14 @@ export class AppModel {
         await ensureDir(typesFolderPath)
             .catch(this.handleError)
 
-        await this.tableFile.writeTablesFile({ 
+        return await this.tableFile.writeTablesFile({ 
             readPath: filePath, 
             writePath: tableFilePath 
         })
             .catch(this.handleError)
     }
 
-    async createQueryFieldFiles(filePath: string) {
+    async createHelperFiles(filePath: string) {
         if(!this.isQueriesFile(filePath)) return
 
         const helpersFolderPath = join(this.serverFolder, this.routeName, 'helpers')
@@ -90,7 +92,7 @@ export class AppModel {
         })
             .catch(this.handleError)
 
-        if(queries) await this.fieldsFile.writeFieldsFile({ 
+        if(queries) return await this.fieldsFile.writeFieldsFile({ 
             writePath: fieldFilePath,
             tableName: this.routeName,
             queries 
@@ -98,21 +100,30 @@ export class AppModel {
             .catch(this.handleError)
     }
     
-    async createMethodsFile(filePath: string) {
-        if(!this.isTableFile(filePath) && !this.isQueriesFile(filePath)) return
+    async createMethodsFile({ tableContent, fieldsContent }: MethodArgs) {
 
         const typesFolderPath = join(this.serverFolder, this.routeName, 'types')
-        const methodsFilePath = join(typesFolderPath, 'methods.ts')   
-        const tableFilePath = join(typesFolderPath, 'table.ts')
+        const writePath = join(typesFolderPath, 'methods.ts')   
 
-        const helpersFolderPath = join(this.serverFolder, this.routeName, 'helpers')
-        const fieldFilePath = join(helpersFolderPath, 'fields.ts')
+        if(tableContent) {
+            const helpersFolderPath = join(this.serverFolder, this.routeName, 'helpers')
+            const fieldsPath = join(helpersFolderPath, 'fields.ts')
 
-        await this.methodsFile.writeMethodsFile({ 
-            fieldsPath: fieldFilePath,
-            tablePath: tableFilePath,
-            writePath: methodsFilePath
-        })
-            .catch(this.handleError)
+            await this.methodsFile.writeMethodsFile1({ tableContent, fieldsPath, writePath })
+        }
+
+        if(fieldsContent) {
+            const tablePath = join(typesFolderPath, 'table.ts')
+
+            await this.methodsFile.writeMethodsFile2({ fieldsContent, tablePath, writePath })
+        }
+    }
+
+    async createModel(filePath: string) {
+        const tableContent = await this.createTableFile(filePath)
+        if(tableContent) await this.createMethodsFile({ tableContent })
+
+        const fieldsContent = await this.createHelperFiles(filePath)
+        if(fieldsContent) await this.createMethodsFile({ fieldsContent })
     }
 }

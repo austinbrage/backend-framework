@@ -2,6 +2,8 @@ import { pathExists, readFile, writeFile } from "fs-extra"
 
 type AsignArgs = { fieldsObject: string | null, tableTypes: Record<string, string> }
 type WriteArgs = { fieldsPath: string, tablePath: string, writePath: string }
+type WriteArgs1 = { fieldsPath: string, tableContent: string, writePath: string }
+type WriteArgs2 = { fieldsContent: string, tablePath: string, writePath: string }
 
 export class MethodsFile {
 
@@ -69,28 +71,41 @@ export class MethodsFile {
         return lines.join('\n')
     }
 
-    async writeMethodsFile({ fieldsPath, tablePath, writePath }: WriteArgs) {
-
+    async writeMethodsFile1({ fieldsPath, tableContent, writePath }: WriteArgs1) {
+        
         const isFieldsFile = await pathExists(fieldsPath)
             .catch(err => { throw new Error(err) })
 
+        if(isFieldsFile) {
+            const fieldsContent = await readFile(fieldsPath, 'utf-8')
+                .catch(err => { throw new Error(err) })
+            
+            const tableTypes = this.createTableObject(tableContent)
+            const fieldsObject = this.createFieldTypes(fieldsContent)
+    
+            const content = this.asignCorrectType({ fieldsObject, tableTypes }) ?? ''
+    
+            await writeFile(writePath, content, 'utf-8')
+                .catch(err => { throw new Error(err) })
+        }
+    }
+
+    async writeMethodsFile2({ fieldsContent, tablePath, writePath }: WriteArgs2) {
+        
         const isTableFile = await pathExists(tablePath)
             .catch(err => { throw new Error(err) })
 
-        if(!isFieldsFile && !isTableFile) return
-
-        const fieldsContent = await readFile(fieldsPath, 'utf-8')
+        if(isTableFile) {
+            const tableContent = await readFile(tablePath, 'utf-8')
             .catch(err => { throw new Error(err) })
-
-        const tableContent = await readFile(tablePath, 'utf-8')
-            .catch(err => { throw new Error(err) })
-
-        const tableTypes = this.createTableObject(tableContent)
-        const fieldsObject = this.createFieldTypes(fieldsContent)
-
-        const content = this.asignCorrectType({ fieldsObject, tableTypes }) ?? ''
-
-        await writeFile(writePath, content, 'utf-8')
-            .catch(err => { throw new Error(err) })
+            
+            const tableTypes = this.createTableObject(tableContent)
+            const fieldsObject = this.createFieldTypes(fieldsContent)
+    
+            const content = this.asignCorrectType({ fieldsObject, tableTypes }) ?? ''
+    
+            await writeFile(writePath, content, 'utf-8')
+                .catch(err => { throw new Error(err) })
+        }
     }
 }
