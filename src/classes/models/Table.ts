@@ -10,8 +10,11 @@ interface ColumnInfo {
 type WriteArgs = { readPath: string, writePath: string }
 
 export class TableFile {
+    private content
 
-    constructor() {}    
+    constructor() {
+        this.content = ''
+    }    
 
     private camelCase(str: string) {
         return str.replace(/_([a-z])/g, (_, letter) => letter.toUpperCase())
@@ -81,10 +84,12 @@ export class TableFile {
             
             if (columns.length === 0) return
 
-            const content = this.getTypeScriptContent(tableName, columns)
+            this.content = this.getTypeScriptContent(tableName, columns)
 
-            await writeFile(writePath, content, 'utf-8')
+            await writeFile(writePath, this.content, 'utf-8')
                 .catch(err => { throw new Error(err) })
         }
+
+        return this.content
     }    
 }
