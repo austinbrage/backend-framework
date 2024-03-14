@@ -38,6 +38,6 @@ export class FieldsFile {
         await writeFile(writePath, fieldsObject, 'utf-8')
             .catch(err => { throw new Error(err) })
 
-        return fieldsObject
+        return { fieldsObject, newFields }
     }
 }

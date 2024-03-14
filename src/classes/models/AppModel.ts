@@ -1,5 +1,6 @@
 import { join, relative, resolve, sep } from "path"
 import { ensureDir } from "fs-extra"
+import { ModelFile } from "./Model"
 import { TableFile } from "./Table"
 import { FieldsFile } from "./Fields"
 import { QueriesFile } from "./Queries"
@@ -13,6 +14,7 @@ type Constructor = {
 type MethodArgs = { tableContent?: string, fieldsContent?: string }
 
 export class AppModel {
+    private modelFile
     private tableFile
     private fieldsFile
     private queriesFile
@@ -25,6 +27,7 @@ export class AppModel {
         this.routeName = ''
         this.appFolder = resolve(appFolder)
         this.serverFolder = resolve(serverFolder)
+        this.modelFile = new ModelFile()
         this.tableFile = new TableFile()
         this.fieldsFile = new FieldsFile()
         this.queriesFile = new QueriesFile()
@@ -119,11 +122,35 @@ export class AppModel {
         }
     }
 
+    async createModelFile({ fieldsObject }: { fieldsObject: Record<string, string[]> }) {
+
+        const typesFolderPath = join(this.serverFolder, this.routeName, 'types')
+        const methodsPath = join(typesFolderPath, 'methods.ts')   
+        const tablePath = join(typesFolderPath, 'table.ts')
+
+        const modelFolderPath = join(this.serverFolder, this.routeName, 'model')
+        const writePath = join(modelFolderPath, 'mysql.ts')
+
+        await ensureDir(modelFolderPath)
+            .catch(this.handleError)
+
+        await this.modelFile.writeModelFile({ 
+            fieldsObject,
+            methodsPath, 
+            tablePath, 
+            routeName: this.routeName, 
+            writePath 
+        })
+            .catch(this.handleError)
+    }
+
     async createModel(filePath: string) {
         const tableContent = await this.createTableFile(filePath)
         if(tableContent) await this.createMethodsFile({ tableContent })
 
         const fieldsContent = await this.createHelperFiles(filePath)
-        if(fieldsContent) await this.createMethodsFile({ fieldsContent })
+        if(fieldsContent) await this.createMethodsFile({ fieldsContent: fieldsContent.fieldsObject })
+
+        if(fieldsContent) await this.createModelFile({ fieldsObject: fieldsContent.newFields })
     }
 }
