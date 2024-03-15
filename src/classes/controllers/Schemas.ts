@@ -1,5 +1,6 @@
 import { pathExists, readFile, writeFile } from "fs-extra"
 
+type SchemaArgs = { tableContent: string, routeName: string }
 type WriteArgs = { routeName: string, readPath: string, writePath: string }
 
 export class SchemaFile {
@@ -25,7 +26,7 @@ export class SchemaFile {
         return `${propertyName?.trim()}: ${zodType},`
     }
 
-    private generateSchema({ tableContent, routeName }: { tableContent: string, routeName: string }) {
+    private generateSchema({ tableContent, routeName }: SchemaArgs) {
         const lines = tableContent.split('\n').slice(1, -2)
 
         const properties = lines
