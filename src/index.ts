@@ -3,6 +3,7 @@
 import chokidar from 'chokidar'
 import { AppModel } from './classes/models/AppModel'
 import { AppRoute } from './classes/routes/AppRoute'
+import { AppController } from './classes/controllers/AppController'
 import { appFolder, serverFolder } from './config/consts'
 
 const init = { appFolder, serverFolder }
@@ -28,11 +29,17 @@ watcher.on('unlinkDir', async (path) => {
 watcher.on('add', async (path) => {
     const appModel = new AppModel(init)
     await appModel.createModel(path)
+
+    const appController = new AppController(init)
+    await appController.createController(path)
 })
 
 watcher.on('change', async (path) => {
     const appModel = new AppModel(init)
     await appModel.createModel(path)
+    
+    const appController = new AppController(init)
+    await appController.createController(path)
 })
 
 watcher.on('all', async (event, path) => { 
