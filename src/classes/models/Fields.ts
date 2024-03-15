@@ -29,7 +29,7 @@ export class FieldsFile {
             if (queries[key] !== undefined) {
                 const query = queries[key]
                 const fields = this.getFieldsFromQuery(query)
-                if(fields.length > 0) newFields[key] = fields
+                newFields[key] = fields
             }
         }
 

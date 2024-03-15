@@ -44,10 +44,11 @@ export class ModelFile {
         for (const functionName in fieldsObject) {
             const parameters = fieldsObject[functionName].join(', ')
             const parameterTypes = `${RouteName}Type['${functionName}']`
+            const parameterObject = parameters ? `{ ${parameters} }: ${parameterTypes}` : ''
             const returnType = functionName.includes('get') ? 'RowDataPacket[]' : 'ResultSetHeader'
 
             generatedCode += (
-                `    ${functionName} = async ({ ${parameters} }: ${parameterTypes}) => {\n` +
+                `    ${functionName} = async (${parameterObject}) => {\n` +
                 `        const connection = await this.pool.getConnection()\n\n` +
 
                 `        const [rows] = await connection.execute(\n` +

@@ -24,6 +24,7 @@ export class MethodsFile {
             .replace(`const ${typeName}`, `type I${this.capitalizeFirstLetter(typeName)}`)
             .replace(`default ${typeName}`, `default I${this.capitalizeFirstLetter(typeName)}`)
             .replace(`${typeName} =`, '')
+            .replace(/\[],/g, 'never')
             .replace(/"/g, '')
             .replace(/],/g, ']')   
             .replace(/\[/g, '{')

@@ -150,7 +150,6 @@ export class AppModel {
 
         const fieldsContent = await this.createHelperFiles(filePath)
         if(fieldsContent) await this.createMethodsFile({ fieldsContent: fieldsContent.fieldsObject })
-
-        if(fieldsContent) await this.createModelFile({ fieldsObject: fieldsContent.newFields })
+        if(fieldsContent) await this.createModelFile({ fieldsObject: fieldsContent.newFields }) 
     }
 }
