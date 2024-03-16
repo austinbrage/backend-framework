@@ -18,21 +18,22 @@ export class ModelFile {
         const RouteName = this.capitalizeFirstLetter(routeName)
 
         return (
-        `import type { RowDataPacket, ResultSetHeader, Pool } from 'mysql2/promise'\n` +
-        `import type ${RouteName}Type from '../types/methods'\n` +
-        `import ${routeName}Queries from '../helpers/queries'\n\n` +
+        `import type { RowDataPacket, ResultSetHeader, Pool } from 'mysql2/promise';\n` +
+        `import ${routeName}Queries from '../helpers/queries';\n` +
+        `import type ${RouteName}Type from '../types/methods';\n` +
+        `import type I${RouteName} from '../types/model';\n\n` +
 
-        `class ${RouteName} {\n` +
-        `    private pool\n\n` +
+        `class ${RouteName} implements I${RouteName} {\n` +
+        `    private pool;\n\n` +
             
         `    constructor({ ${routeName}Pool }: { ${routeName}Pool: Pool }) {\n` +
-        `        this.pool = ${routeName}Pool\n` +
+        `        this.pool = ${routeName}Pool;\n` +
         `    }\n\n` +
         
         `${methods}` +
-        `}\n\n` +
+        `};\n\n` +
 
-        `export default ${RouteName}`
+        `export default ${RouteName};`
         )
     }
 
@@ -49,15 +50,15 @@ export class ModelFile {
 
             generatedCode += (
                 `    ${functionName} = async (${parameterObject}) => {\n` +
-                `        const connection = await this.pool.getConnection()\n\n` +
+                `        const connection = await this.pool.getConnection();\n\n` +
 
                 `        const [rows] = await connection.execute(\n` +
                 `           ${routeName}Queries.${functionName},\n` +
                 `           [${parameters}]\n` +
-                `        )\n\n` +
+                `        );\n\n` +
 
-                `        connection.release()\n` +
-                `        return rows as ${returnType}\n` +
+                `        connection.release();\n` +
+                `        return rows as ${returnType};\n` +
                 `    }\n\n`
             ) 
         }

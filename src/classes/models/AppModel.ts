@@ -5,12 +5,14 @@ import { TableFile } from "./Table"
 import { FieldsFile } from "./Fields"
 import { QueriesFile } from "./Queries"
 import { MethodsFile } from "./Methods"
+import { InterfaceFile } from "./Interface"
 
 type Constructor = { 
     appFolder: string, 
     serverFolder: string 
 }
 
+type FieldsObject = { fieldsObject: Record<string, string[]> }
 type MethodArgs = { tableContent?: string, fieldsContent?: string }
 
 export class AppModel {
@@ -19,6 +21,7 @@ export class AppModel {
     private fieldsFile
     private queriesFile
     private methodsFile
+    private interfaceFile
     private routeName: string
     private appFolder: string
     private serverFolder: string
@@ -32,6 +35,7 @@ export class AppModel {
         this.fieldsFile = new FieldsFile()
         this.queriesFile = new QueriesFile()
         this.methodsFile = new MethodsFile()
+        this.interfaceFile = new InterfaceFile()
     }
 
     private handleError(err: Error) {
@@ -122,7 +126,24 @@ export class AppModel {
         }
     }
 
-    async createModelFile({ fieldsObject }: { fieldsObject: Record<string, string[]> }) {
+    async createInterfaceFile({ fieldsObject }: FieldsObject) {
+        
+        const typesFolderPath = join(this.serverFolder, this.routeName, 'types')
+        const writePath = join(typesFolderPath, 'model.ts')   
+        
+        await ensureDir(typesFolderPath)
+            .catch(this.handleError)
+
+    
+        await this.interfaceFile.writeInterfaceFile({ 
+            routeName: this.routeName, 
+            fieldsObject,
+            writePath 
+        })
+            .catch(this.handleError)
+    }
+
+    async createModelFile({ fieldsObject }: FieldsObject) {
 
         const typesFolderPath = join(this.serverFolder, this.routeName, 'types')
         const methodsPath = join(typesFolderPath, 'methods.ts')   
@@ -150,6 +171,7 @@ export class AppModel {
 
         const fieldsContent = await this.createHelperFiles(filePath)
         if(fieldsContent) await this.createMethodsFile({ fieldsContent: fieldsContent.fieldsObject })
+        if(fieldsContent) await this.createInterfaceFile({ fieldsObject: fieldsContent.newFields }) 
         if(fieldsContent) await this.createModelFile({ fieldsObject: fieldsContent.newFields }) 
     }
 }
