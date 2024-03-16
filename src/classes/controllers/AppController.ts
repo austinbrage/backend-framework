@@ -1,5 +1,6 @@
-import { SchemaFile } from "./Schemas"
 import { ensureDir } from "fs-extra"
+import { SchemaFile } from "./Schemas"
+import { ValidationFile } from './Validations'
 import { join, relative, resolve, sep } from "path"
 
 type Constructor = { 
@@ -9,6 +10,7 @@ type Constructor = {
 
 export class AppController {
     private schemaFile
+    private validationFile
     private routeName: string
     private appFolder: string
     private serverFolder: string
@@ -18,6 +20,7 @@ export class AppController {
         this.appFolder = resolve(appFolder)
         this.serverFolder = resolve(serverFolder)
         this.schemaFile = new SchemaFile()
+        this.validationFile = new ValidationFile()
     }
 
     private handleError(err: Error) {
@@ -68,7 +71,28 @@ export class AppController {
             .catch(this.handleError)
     }
 
+    private async createValidationFile(filePath: string) {
+        if(!this.isTableFile(filePath) && !this.isQueriesFile(filePath)) return
+
+        const helpersFolderPath = join(this.serverFolder, this.routeName, 'helpers')
+        const fieldsFilePath = join(helpersFolderPath, 'fields.ts')
+
+        const validationFolderPath = join(this.serverFolder, this.routeName, 'validation')
+        const validatorFilePath = join(validationFolderPath, 'validator.ts')
+
+        await ensureDir(validationFolderPath)
+            .catch(this.handleError)
+
+        await this.validationFile.writeValidationFile({ 
+            readPath: fieldsFilePath, 
+            writePath: validatorFilePath,
+            routeName: this.routeName
+        })
+            .catch(this.handleError)
+    }
+
     async createController(filePath: string) {
         await this.createSchemaFile(filePath)
+        await this.createValidationFile(filePath)
     }
 }
