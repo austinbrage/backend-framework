@@ -1,6 +1,6 @@
 import createApp from './routes/app'
-import { PORT, ENVIRONMENT } from './utils/config'
-import { createPoolConnection } from './services/database'
+import { PORT, ENVIRONMENT } from './global/utils/config'
+import { createPoolConnection } from './global/services/database'
 
 const pingPool = createPoolConnection({
     waitForConnection: true, 

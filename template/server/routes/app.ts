@@ -1,9 +1,9 @@
 import express, { json, Router }  from "express"
-import { AppRoutes as APP, ResourceRoutes as RESOURCES } from "../types/api"
-import corsMiddleware from "../middlewares/cors"
-import errorMiddleware from "../middlewares/error"
+import { AppRoutes as APP, ResourceRoutes as RESOURCES } from "../global/types/api"
+import corsMiddleware from "../global/middlewares/cors"
+import errorMiddleware from "../global/middlewares/error"
 import createHealthcareRouter from './healthcare/healthcare'
-import { notFoundHandler } from "../services/notFoundHandler"
+import { notFoundHandler } from "../global/services/notFoundHandler"
 import { type Pool } from "mysql2/promise"
 
 type App = {
