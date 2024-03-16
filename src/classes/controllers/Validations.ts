@@ -32,7 +32,7 @@ export class ValidationFile {
         const classMethod = this.generateZodMethods({ routeName, fieldsContent })
 
         return (
-            `import ${routeName}TableSchema from '../schema/object';\n\n` +
+            `import ${routeName}TableSchema from './schema';\n\n` +
 
             `class ${RouteName}Validation {\n` +
             `${classMethod}` +

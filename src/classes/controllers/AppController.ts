@@ -57,10 +57,10 @@ export class AppController {
         const typesFolderPath = join(this.serverFolder, this.routeName, 'types')
         const tableFilePath = join(typesFolderPath, 'table.ts')
 
-        const schemasFolderPath = join(this.serverFolder, this.routeName, 'schema')
-        const schemaFilePath = join(schemasFolderPath, 'object.ts')
+        const validationFolderPath = join(this.serverFolder, this.routeName, 'validation')
+        const schemaFilePath = join(validationFolderPath, 'schema.ts')
 
-        await ensureDir(schemasFolderPath)
+        await ensureDir(validationFolderPath)
             .catch(this.handleError)
 
         await this.schemaFile.writeSchemaFile({ 
