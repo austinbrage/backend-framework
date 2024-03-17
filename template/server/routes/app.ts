@@ -1,5 +1,5 @@
 import express, { json, Router }  from "express"
-import { AppRoutes as APP, ResourceRoutes as RESOURCES } from "../global/types/api"
+import { APP, RESOURCES } from "../global/types/resources"
 import corsMiddleware from "../global/middlewares/cors"
 import errorMiddleware from "../global/middlewares/error"
 import createHealthcareRouter from './healthcare/healthcare'

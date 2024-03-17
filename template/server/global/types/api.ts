@@ -1,14 +1,6 @@
 import { type ZodFormattedError } from "zod"
 import { type RowDataPacket, ResultSetHeader } from "mysql2"
 
-export enum AppRoutes {
-    VERSION_1 = '/awesome-api'
-}
-
-export enum ResourceRoutes {
-    PING = '/ping'
-}
-
 export type ErrorResponse = {
     success: false
     error: {
