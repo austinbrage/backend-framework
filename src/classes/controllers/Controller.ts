@@ -54,8 +54,8 @@ export class ControllerFile {
         
         return (
             `import ${RouteName}Validation from '../validation/validator';\n` +
-            `import { asyncErrorHandler } from '../../../services/errorHandler';\n` +
-            `import { createOkResponse, createErrorResponse } from '../../../helpers/appResponse';\n` +
+            `import { asyncErrorHandler } from '../../../global/services/errorHandler';\n` +
+            `import { createOkResponse, createErrorResponse } from '../../../global/helpers/appResponse';\n` +
             `import type { Request, Response } from 'express';\n` +
             `import type I${RouteName} from '../types/model';\n` +
             `import type { ZodError } from 'zod';\n\n` +
