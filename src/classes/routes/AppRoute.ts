@@ -30,11 +30,6 @@ export class AppRoute {
         this.routeName = pathSegments[0]  
     }
 
-    async createServerFolder() { 
-        await ensureDir(this.serverFolder)
-            .catch(this.handleError) 
-    }
-
     async createRouteFolder(filePath: string) {
         if(!this.isRouteFolder(filePath)) return
 

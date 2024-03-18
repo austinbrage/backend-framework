@@ -16,7 +16,6 @@ const watcher = chokidar.watch(appFolder, {
 // Create, Delete Server Route
 watcher.on('addDir', async (path) => {
     const appRoute = new AppRoute(init)
-    await appRoute.createServerFolder()
     await appRoute.createRouteFolder(path)
 })
 
