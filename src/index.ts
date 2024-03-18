@@ -17,6 +17,7 @@ const watcher = chokidar.watch(appFolder, {
 watcher.on('addDir', async (path) => {
     const appRoute = new AppRoute(init)
     await appRoute.createRouteFolder(path)
+    await appRoute.createEntryPoints(path)
 })
 
 watcher.on('unlinkDir', async (path) => {
