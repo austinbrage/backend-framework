@@ -12,6 +12,14 @@
   "keywords": [],
   "author": "Austin Brage",
   "license": "ISC",
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^20.11.30",
+    "@typescript-eslint/eslint-plugin": "^7.3.1",
+    "@typescript-eslint/parser": "^7.3.1",
+    "eslint": "^8.57.0",
+    "typescript": "^5.4.2"
+  },
   "dependencies": {
     "fs-extra": "^11.2.0"
   }
