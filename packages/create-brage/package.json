@@ -1,0 +1,15 @@
+{
+  "name": "create-brage",
+  "version": "0.0.0",
+  "description": "Create Template for Brage Library",
+  "main": "index.js",
+  "bin": {
+    "brage": "./dist/index.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Austin Brage",
+  "license": "ISC"
+}
