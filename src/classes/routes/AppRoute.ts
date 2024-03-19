@@ -1,3 +1,4 @@
+import { AppFile } from './CreateApp'
 import { ResourcesFile } from './Resources'
 import { sep, join, resolve, relative } from 'path'
 import { readdir, stat, ensureDir, pathExists, remove } from 'fs-extra'
@@ -8,6 +9,7 @@ type Constructor = {
 }
 
 export class AppRoute {
+    private appFile
     private resourcesFile
     private routeName: string
     private routeNames: string[]
@@ -19,6 +21,7 @@ export class AppRoute {
         this.routeNames = []
         this.appFolder = resolve(appFolder)
         this.serverFolder = resolve(serverFolder)
+        this.appFile = new AppFile()
         this.resourcesFile = new ResourcesFile()
     }
 
@@ -68,6 +71,18 @@ export class AppRoute {
             routeNames: this.routeNames, 
             writePath: resourcesFilePath 
         })
+            .catch(this.handleError)
+    }
+
+    private async modifyAppFile() {
+        const routesFolderPath = join(process.cwd(), 'server', 'routes')
+        const appFilePath = join(routesFolderPath, 'app.ts')
+
+        this.appFile.writeAppFile({ 
+            routeNames: this.routeNames, 
+            writePath: appFilePath 
+        })
+            .catch(this.handleError)
     }
 
     async createRouteFolder(filePath: string) {
@@ -94,5 +109,6 @@ export class AppRoute {
         if(!isRouteFolders) return
 
         this.modifyResourcesFile()
+        this.modifyAppFile()
     }
 }
