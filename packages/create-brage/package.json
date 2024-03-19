@@ -11,5 +11,8 @@
   },
   "keywords": [],
   "author": "Austin Brage",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "fs-extra": "^11.2.0"
+  }
 }
